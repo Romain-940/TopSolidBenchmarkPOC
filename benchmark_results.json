@@ -1,0 +1,38 @@
+[
+  {
+    "computerName": "WS-DESIGN-01",
+    "cpu": "Intel Core i9-13900K",
+    "gpu": "NVIDIA RTX 4080",
+    "ram": "64GB",
+    "topSolidVersion": "7.18.200",
+    "results": {
+      "openTimeSec": 12.5,
+      "rebuildTimeSec": 45.2,
+      "drawingGenSec": 30.1
+    }
+  },
+  {
+    "computerName": "LAPTOP-OFFICE",
+    "cpu": "Intel Core i7-11850H",
+    "gpu": "NVIDIA RTX A2000",
+    "ram": "32GB",
+    "topSolidVersion": "7.18.100",
+    "results": {
+      "openTimeSec": 22.1,
+      "rebuildTimeSec": 88.4,
+      "drawingGenSec": 55.0
+    }
+  },
+  {
+    "computerName": "WS-OLD-GEN",
+    "cpu": "Intel Xeon E5-2687W",
+    "gpu": "NVIDIA Quadro K4200",
+    "ram": "32GB",
+    "topSolidVersion": "7.17.500",
+    "results": {
+      "openTimeSec": 35.8,
+      "rebuildTimeSec": 140.2,
+      "drawingGenSec": 95.3
+    }
+  }
+]

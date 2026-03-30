@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>TopSolid Benchmark POC</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 40px;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>TopSolid Performance Benchmark (POC)</h1>
+        <canvas id="benchmarkChart"></canvas>
+    </div>
+
+    <script>
+    // In a real app, you would use fetch('benchmark_results.json')
+    // For this POC, we embed the data directly
+    const dataFromApp = [
+        { "name": "i9-13900K / RTX 4080", "rebuild": 45.2, "open": 12.5 },
+        { "name": "i7-11850H / RTX A2000", "rebuild": 88.4, "open": 22.1 },
+        { "name": "Xeon E5 / Quadro K4200", "rebuild": 140.2, "open": 35.8 }
+    ];
+
+    const ctx = document.getElementById('benchmarkChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: dataFromApp.map(d => d.name),
+            datasets: [
+                {
+                    label: 'Temps de Reconstruction (secondes) - Plus bas est mieux',
+                    data: dataFromApp.map(d => d.rebuild),
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Temps d\'Ouverture (secondes)',
+                    data: dataFromApp.map(d => d.open),
+                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            indexAxis: 'y', // Barres horizontales pour mieux lire les noms de CPU
+            scales: {
+                x: { beginAtZero: true }
+            }
+        }
+    });
+    </script>
+
+</body>
+</html>
