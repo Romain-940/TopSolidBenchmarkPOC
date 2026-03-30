@@ -2,77 +2,132 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>TopSolid Benchmark POC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TopSolid Automation Benchmark</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body {
-            font-family: sans-serif;
-            margin: 40px;
-            background-color: #f4f4f9;
+        :root {
+            --primary-color: #00549F; /* Bleu TopSolid */
+            --secondary-color: #f8f9fa;
         }
-
-        .container {
-            max-width: 900px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background-color: #e9ecef; 
         }
-
-        h1 {
-            color: #333;
+        .container { 
+            max-width: 1000px; 
+            margin: auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
+        }
+        header {
             text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+            margin-bottom: 30px;
+            padding-bottom: 10px;
         }
+        h1 { color: var(--primary-color); margin: 0; }
+        p.subtitle { color: #666; }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 60vh;
+            width: 100%;
+        }
+        .loading { text-align: center; font-style: italic; color: #888; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>TopSolid Performance Benchmark (POC)</h1>
+<div class="container">
+    <header>
+        <h1>TopSolid'Automation Benchmark</h1>
+        <p class="subtitle">Comparatif de performance communautaire</p>
+    </header>
+
+    <div id="loader" class="loading">Chargement des données de benchmark...</div>
+    
+    <div class="chart-container">
         <canvas id="benchmarkChart"></canvas>
     </div>
+</div>
 
-    <script>
-    // In a real app, you would use fetch('benchmark_results.json')
-    // For this POC, we embed the data directly
-    const dataFromApp = [
-        { "name": "i9-13900K / RTX 4080", "rebuild": 45.2, "open": 12.5 },
-        { "name": "i7-11850H / RTX A2000", "rebuild": 88.4, "open": 22.1 },
-        { "name": "Xeon E5 / Quadro K4200", "rebuild": 140.2, "open": 35.8 }
-    ];
-
-    const ctx = document.getElementById('benchmarkChart').getContext('2d');
-
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: dataFromApp.map(d => d.name),
-            datasets: [
-                {
-                    label: 'Temps de Reconstruction (secondes) - Plus bas est mieux',
-                    data: dataFromApp.map(d => d.rebuild),
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                },
-                {
-                    label: 'Temps d\'Ouverture (secondes)',
-                    data: dataFromApp.map(d => d.open),
-                    backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1
-                }
-            ]
-        },
-        options: {
-            indexAxis: 'y', // Barres horizontales pour mieux lire les noms de CPU
-            scales: {
-                x: { beginAtZero: true }
+<script>
+    async function initBenchmark() {
+        const loader = document.getElementById('loader');
+        
+        try {
+            // Tentative de lecture du fichier JSON dans le même dossier
+            const response = await fetch('benchmark_results.json');
+            
+            if (!response.ok) {
+                throw new Error("Le fichier benchmark_results.json est introuvable.");
             }
+            
+            const data = await response.json();
+            loader.style.display = 'none';
+            renderChart(data);
+
+        } catch (error) {
+            loader.innerHTML = `<span style="color:red">Erreur : ${error.message}</span>`;
+            console.error("Détails de l'erreur:", error);
         }
-    });
-    </script>
+    }
+
+    function renderChart(benchData) {
+        const ctx = document.getElementById('benchmarkChart').getContext('2d');
+        
+        // Extraction des étiquettes (Config PC) et des valeurs
+        const labels = benchData.map(d => `${d.cpu} | ${d.gpu}`);
+        const rebuildTimes = benchData.map(d => d.results.rebuildTimeSec);
+        const openTimes = benchData.map(d => d.results.openTimeSec);
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Reconstruction (sec)',
+                        data: rebuildTimes,
+                        backgroundColor: 'rgba(0, 84, 159, 0.7)',
+                        borderColor: 'rgba(0, 84, 159, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Ouverture (sec)',
+                        data: openTimes,
+                        backgroundColor: 'rgba(255, 159, 64, 0.7)',
+                        borderColor: 'rgba(255, 159, 64, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                indexAxis: 'y', // Barres horizontales
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { 
+                        beginAtZero: true,
+                        title: { display: true, text: 'Temps en secondes (plus court est mieux)' }
+                    }
+                },
+                plugins: {
+                    legend: { position: 'top' },
+                    tooltip: { mode: 'index', intersect: false }
+                }
+            }
+        });
+    }
+
+    // Lancement au chargement de la page
+    initBenchmark();
+</script>
 
 </body>
 </html>
