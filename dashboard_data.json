@@ -1,0 +1,134 @@
+[
+  {
+    "CpuModel": "Intel(R) Core(TM) i7-14700",
+    "GpuModel": "NVIDIA GeForce RTX 4070 SUPER",
+    "IsLaptop": false,
+    "RamGb": 32,
+    "TsVersion": "715400247",
+    "ScenarioId": "001_PRT_Spring",
+    "ScenarioName": "Import and Rebuild Spring with 0.01mm / 1deg",
+    "ExecutionTimeMs": 34737,
+    "Success": true
+  },
+  {
+    "CpuModel": "Intel(R) Core(TM) i7-14700",
+    "GpuModel": "NVIDIA GeForce RTX 4070 SUPER",
+    "IsLaptop": false,
+    "RamGb": 32,
+    "TsVersion": "715400247",
+    "ScenarioId": "002_ASM_200Screws",
+    "ScenarioName": "Repeat 200 Screws with Processes",
+    "ExecutionTimeMs": 23457,
+    "Success": true
+  },
+  {
+    "CpuModel": "Intel(R) Core(TM) i7-14700",
+    "GpuModel": "NVIDIA GeForce RTX 4070 SUPER",
+    "IsLaptop": false,
+    "RamGb": 32,
+    "TsVersion": "715400247",
+    "ScenarioId": "003_INT_ImportStep",
+    "ScenarioName": "Import 140Mb STEP File, 812 Parts",
+    "ExecutionTimeMs": 132975,
+    "Success": true
+  },
+  {
+    "CpuModel": "Intel(R) Core(TM) i7-14700",
+    "GpuModel": "NVIDIA GeForce RTX 4070 SUPER",
+    "IsLaptop": false,
+    "RamGb": 32,
+    "TsVersion": "720400040",
+    "ScenarioId": "001_PRT_Spring",
+    "ScenarioName": "Import and Rebuild Spring with 0.01mm / 1deg",
+    "ExecutionTimeMs": 35884,
+    "Success": true
+  },
+  {
+    "CpuModel": "Intel(R) Core(TM) i7-14700",
+    "GpuModel": "NVIDIA GeForce RTX 4070 SUPER",
+    "IsLaptop": false,
+    "RamGb": 32,
+    "TsVersion": "720400040",
+    "ScenarioId": "002_ASM_200Screws",
+    "ScenarioName": "Repeat 200 Screws with Processes",
+    "ExecutionTimeMs": 29506,
+    "Success": true
+  },
+  {
+    "CpuModel": "Intel(R) Core(TM) i7-14700",
+    "GpuModel": "NVIDIA GeForce RTX 4070 SUPER",
+    "IsLaptop": false,
+    "RamGb": 32,
+    "TsVersion": "720400040",
+    "ScenarioId": "003_INT_ImportStep",
+    "ScenarioName": "Import 140Mb STEP File, 812 Parts",
+    "ExecutionTimeMs": 226567,
+    "Success": true
+  },
+  {
+    "CpuModel": "Intel(R) Core(TM) Ultra 9 275HX",
+    "GpuModel": "NVIDIA GeForce RTX 5080 Laptop GPU",
+    "IsLaptop": true,
+    "RamGb": 64,
+    "TsVersion": "715400247",
+    "ScenarioId": "001_PRT_Spring",
+    "ScenarioName": "Import and Rebuild Spring with 0.01mm / 1deg",
+    "ExecutionTimeMs": 34905,
+    "Success": true
+  },
+  {
+    "CpuModel": "Intel(R) Core(TM) Ultra 9 275HX",
+    "GpuModel": "NVIDIA GeForce RTX 5080 Laptop GPU",
+    "IsLaptop": true,
+    "RamGb": 64,
+    "TsVersion": "715400247",
+    "ScenarioId": "002_ASM_200Screws",
+    "ScenarioName": "Repeat 200 Screws with Processes",
+    "ExecutionTimeMs": 31728,
+    "Success": true
+  },
+  {
+    "CpuModel": "Intel(R) Core(TM) Ultra 9 275HX",
+    "GpuModel": "NVIDIA GeForce RTX 5080 Laptop GPU",
+    "IsLaptop": true,
+    "RamGb": 64,
+    "TsVersion": "715400247",
+    "ScenarioId": "003_INT_ImportStep",
+    "ScenarioName": "Import 140Mb STEP File, 812 Parts",
+    "ExecutionTimeMs": 159606,
+    "Success": true
+  },
+  {
+    "CpuModel": "Intel(R) Core(TM) Ultra 9 275HX",
+    "GpuModel": "NVIDIA GeForce RTX 5080 Laptop GPU",
+    "IsLaptop": true,
+    "RamGb": 64,
+    "TsVersion": "720400042",
+    "ScenarioId": "001_PRT_Spring",
+    "ScenarioName": "Import and Rebuild Spring with 0.01mm / 1deg",
+    "ExecutionTimeMs": 32169,
+    "Success": true
+  },
+  {
+    "CpuModel": "Intel(R) Core(TM) Ultra 9 275HX",
+    "GpuModel": "NVIDIA GeForce RTX 5080 Laptop GPU",
+    "IsLaptop": true,
+    "RamGb": 64,
+    "TsVersion": "720400042",
+    "ScenarioId": "002_ASM_200Screws",
+    "ScenarioName": "Repeat 200 Screws with Processes",
+    "ExecutionTimeMs": 28262,
+    "Success": true
+  },
+  {
+    "CpuModel": "Intel(R) Core(TM) Ultra 9 275HX",
+    "GpuModel": "NVIDIA GeForce RTX 5080 Laptop GPU",
+    "IsLaptop": true,
+    "RamGb": 64,
+    "TsVersion": "720400042",
+    "ScenarioId": "003_INT_ImportStep",
+    "ScenarioName": "Import 140Mb STEP File, 812 Parts",
+    "ExecutionTimeMs": 202279,
+    "Success": true
+  }
+]

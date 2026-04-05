@@ -1,133 +1,202 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TopSolid Automation Benchmark</title>
+    <title>TopSolid'OpenData - Benchmark Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root {
-            --primary-color: #00549F; /* Bleu TopSolid */
-            --secondary-color: #f8f9fa;
+        /* Modern, clean dashboard styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
         }
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            margin: 0; 
-            padding: 20px; 
-            background-color: #e9ecef; 
-        }
-        .container { 
-            max-width: 1000px; 
-            margin: auto; 
-            background: white; 
-            padding: 30px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
-        }
-        header {
+
+        .header {
             text-align: center;
-            border-bottom: 2px solid var(--primary-color);
             margin-bottom: 30px;
-            padding-bottom: 10px;
         }
-        h1 { color: var(--primary-color); margin: 0; }
-        p.subtitle { color: #666; }
-        .chart-container {
-            position: relative;
-            margin: auto;
-            height: 60vh;
-            width: 100%;
+
+            .header h1 {
+                color: #0056b3;
+                margin-bottom: 5px;
+            }
+        /* Grid layout for the charts */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
         }
-        .loading { text-align: center; font-style: italic; color: #888; }
+
+        .chart-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+            .chart-card h2 {
+                font-size: 1.2rem;
+                margin-top: 0;
+                color: #444;
+                text-align: center;
+                border-bottom: 2px solid #eee;
+                padding-bottom: 10px;
+            }
+        /* Full width for the leaderboard */
+        .full-width {
+            grid-column: 1 / -1;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>TopSolid'Automation Benchmark</h1>
-        <p class="subtitle">Comparatif de performance communautaire</p>
-    </header>
-
-    <div id="loader" class="loading">Chargement des données de benchmark...</div>
-    
-    <div class="chart-container">
-        <canvas id="benchmarkChart"></canvas>
+    <div class="header">
+        <h1>TopSolid'OpenData Performance Dashboard</h1>
+        <p>Community-driven benchmark results across different hardware and TopSolid versions.</p>
     </div>
-</div>
 
-<script>
-    async function initBenchmark() {
-        const loader = document.getElementById('loader');
-        
-        try {
-            // Tentative de lecture du fichier JSON dans le même dossier
-            const response = await fetch('benchmark_results.json');
-            
-            if (!response.ok) {
-                throw new Error("Le fichier benchmark_results.json est introuvable.");
+    <div class="dashboard-grid">
+        <div class="chart-card">
+            <h2>Average Time per Scenario (Seconds)</h2>
+            <canvas id="scenarioChart"></canvas>
+        </div>
+
+        <div class="chart-card">
+            <h2>Version Comparison: Import STEP</h2>
+            <canvas id="versionChart"></canvas>
+        </div>
+
+        <div class="chart-card full-width">
+            <h2>CPU Leaderboard: Import STEP (Lower is better)</h2>
+            <canvas id="cpuChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. DATA FETCHING
+        // ==========================================
+        async function loadDashboardData() {
+            try {
+                const response = await fetch('dashboard_data.json');
+                const data = await response.json();
+                renderCharts(data);
+            } catch (error) {
+                console.error("Error loading JSON. Make sure you are using a local web server (like VS Code Live Server).", error);
+                alert("Could not load dashboard_data.json. Check console for details.");
             }
-            
-            const data = await response.json();
-            loader.style.display = 'none';
-            renderChart(data);
-
-        } catch (error) {
-            loader.innerHTML = `<span style="color:red">Erreur : ${error.message}</span>`;
-            console.error("Détails de l'erreur:", error);
         }
-    }
 
-    function renderChart(benchData) {
-        const ctx = document.getElementById('benchmarkChart').getContext('2d');
-        
-        // Extraction des étiquettes (Config PC) et des valeurs
-        const labels = benchData.map(d => `${d.cpu} | ${d.gpu}`);
-        const rebuildTimes = benchData.map(d => d.results.rebuildTimeSec);
-        const openTimes = benchData.map(d => d.results.openTimeSec);
+        // ==========================================
+        // 2. DATA PROCESSING & CHART RENDERING
+        // ==========================================
+        function renderCharts(data) {
 
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        label: 'Reconstruction (sec)',
-                        data: rebuildTimes,
-                        backgroundColor: 'rgba(0, 84, 159, 0.7)',
-                        borderColor: 'rgba(0, 84, 159, 1)',
-                        borderWidth: 1
-                    },
-                    {
-                        label: 'Ouverture (sec)',
-                        data: openTimes,
-                        backgroundColor: 'rgba(255, 159, 64, 0.7)',
-                        borderColor: 'rgba(255, 159, 64, 1)',
-                        borderWidth: 1
-                    }
-                ]
-            },
-            options: {
-                indexAxis: 'y', // Barres horizontales
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: { 
-                        beginAtZero: true,
-                        title: { display: true, text: 'Temps en secondes (plus court est mieux)' }
-                    }
-                },
-                plugins: {
-                    legend: { position: 'top' },
-                    tooltip: { mode: 'index', intersect: false }
+            // --- Helper: Convert MS to Seconds ---
+            const msToSec = (ms) => (ms / 1000).toFixed(1);
+
+            // -------------------------------------------------------------
+            // CHART 1: Average Time per Scenario (Doughnut)
+            // -------------------------------------------------------------
+            const scenarios = [...new Set(data.map(d => d.ScenarioName))];
+            const scenarioAverages = scenarios.map(scenario => {
+                const records = data.filter(d => d.ScenarioName === scenario);
+                const avgMs = records.reduce((sum, r) => sum + r.ExecutionTimeMs, 0) / records.length;
+                return msToSec(avgMs);
+            });
+
+            new Chart(document.getElementById('scenarioChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: scenarios,
+                    datasets: [{
+                        data: scenarioAverages,
+                        backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56', '#4BC0C0']
+                    }]
                 }
-            }
-        });
-    }
+            });
 
-    // Lancement au chargement de la page
-    initBenchmark();
-</script>
+            // -------------------------------------------------------------
+            // CHART 2: Version Comparison for "Import STEP" (Bar)
+            // -------------------------------------------------------------
+            // Filter only the heavy import scenario
+            const importData = data.filter(d => d.ScenarioId === "003_INT_ImportStep");
+            const versions = [...new Set(importData.map(d => d.TsVersion))].sort();
 
+            const versionAverages = versions.map(v => {
+                const records = importData.filter(d => d.TsVersion === v);
+                const avgMs = records.reduce((sum, r) => sum + r.ExecutionTimeMs, 0) / records.length;
+                return msToSec(avgMs);
+            });
+
+            new Chart(document.getElementById('versionChart'), {
+                type: 'bar',
+                data: {
+                    labels: versions,
+                    datasets: [{
+                        label: 'Avg Execution Time (Seconds)',
+                        data: versionAverages,
+                        backgroundColor: '#36A2EB'
+                    }]
+                },
+                options: {
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+
+            // -------------------------------------------------------------
+            // CHART 3: CPU Leaderboard for "Import STEP" (Horizontal Bar)
+            // -------------------------------------------------------------
+            // Group by CPU Model for the Import scenario
+            const cpuGroups = {};
+            importData.forEach(d => {
+                if (!cpuGroups[d.CpuModel]) {
+                    cpuGroups[d.CpuModel] = { totalMs: 0, count: 0, isLaptop: d.IsLaptop };
+                }
+                cpuGroups[d.CpuModel].totalMs += d.ExecutionTimeMs;
+                cpuGroups[d.CpuModel].count += 1;
+            });
+
+            // Calculate averages and sort from fastest to slowest
+            const cpuLeaderboard = Object.keys(cpuGroups).map(cpu => {
+                return {
+                    cpu: cpu,
+                    avgSec: parseFloat(msToSec(cpuGroups[cpu].totalMs / cpuGroups[cpu].count)),
+                    isLaptop: cpuGroups[cpu].isLaptop
+                };
+            }).sort((a, b) => a.avgSec - b.avgSec); // Ascending sort (Lower time = better)
+
+            new Chart(document.getElementById('cpuChart'), {
+                type: 'bar',
+                data: {
+                    labels: cpuLeaderboard.map(c => c.cpu),
+                    datasets: [{
+                        label: 'Execution Time (Seconds) - Lower is Better',
+                        data: cpuLeaderboard.map(c => c.avgSec),
+                        // Color laptops differently from desktops for quick visual cues
+                        backgroundColor: cpuLeaderboard.map(c => c.isLaptop ? '#FF9F40' : '#4BC0C0')
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', // Makes the bar chart horizontal
+                    scales: { x: { beginAtZero: true } },
+                    plugins: {
+                        legend: { display: false } // Hide legend since colors represent form factor
+                    }
+                }
+            });
+        }
+
+        // ==========================================
+        // 3. INITIALIZATION
+        // ==========================================
+        loadDashboardData();
+    </script>
 </body>
 </html>
